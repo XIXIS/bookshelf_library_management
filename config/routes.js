@@ -49,9 +49,10 @@ export default () => {
   /**
    * Book routes
    */
-  router.get('/api/books', books.list);
+  router.get('/api/public/books', books.list);
   router.post('/api/books', books.create);
   router.put('/api/books/:bookId', books.updateBook);
+  router.post('/api/public/books/search', books.listSearchedBooks);
 
   
   return router;

@@ -56,13 +56,16 @@
 </ul>
 
 <div class="container">
-    <div class="row">
+    <div class="row" style="margin-bottom: 0">
         <div class="col s12" style="padding-left: 0">
-            <p style="padding-left: 14px"><strong id="books-num"><%= books.length %></strong> book(s) in the glossary</p>
+            <p style="padding-left: 14px"><strong id="books-num"><%= books.length %></strong> book(s) in the glossary
+            </p>
         </div>
     </div>
 </div>
+
 <div class="container">
+
     <div class="row">
         <div class="col s12">
             <div class="row" id="error-div" style="display: none;">
@@ -93,10 +96,21 @@
 
         </div>
     </div>
-</div>
 
-
-<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <div class="grey lighten-4" style="height: 50px;border-radius: 10px">
+                <i class="material-icons left" style="margin: 15px;">search</i>
+                <input type="text"
+                       style="width: 80%;outline: none;border-bottom: none;box-shadow: none !important;font-weight: 300"
+                       id="search"
+                       placeholder="Search book by title, genre">
+                <button class="btn z-depth-0 grey darken-1 right white-text" style="border: 1px solid #e0e0e0;border-radius: 5px;margin-top: 7px"
+                        id="search-button"
+                        onclick="loadSearchedBooks()">search</button>
+            </div>
+        </div>
+    </div>
 
     <div style="display: none;" class="center-align" id="preloader">
         <div class="preloader-wrapper small active">
@@ -162,7 +176,8 @@
                              style="border: 1px solid #e0e0e0; border-radius: 10px; height: 200px;cursor: pointer">
                             <div class="card-content">
 
-                                <p style="font-size: 13px; font-family: 'Roboto Mono', sans-serif"><strong><%= new Date(book.createdAt).toLocaleDateString() %></strong></p>
+                                <p style="font-size: 13px; font-family: 'Roboto Mono', sans-serif">
+                                    <strong><%= new Date(book.createdAt).toLocaleDateString() %></strong></p>
 
                                 <% if(book.title.length < 18) { %>
                                     <span class="card-title black-text"
@@ -396,7 +411,7 @@
   function loadBooks() {
     axios({
       method: 'get',
-      url: `/api/books`,
+      url: `/api/public/books`,
       headers: {
         'Content-Type': 'application/json',
         'x-access-token': session.token
@@ -409,6 +424,7 @@
         res.data.books.forEach(book => {
           html += `<a href='#detail-modal' class='modal-trigger view-book' onclick="viewBook('${book._id}|${book.title}|${book.author}|${book.genre}|${book.summary}')">
             <div class='col s12 m4 l3'><div class='card z-depth-0' style='border: 1px solid #e0e0e0; border-radius: 10px;height: 200px;cursor: pointer'><div class='card-content'>
+            <p style="font-size: 13px; font-family: 'Roboto Mono', sans-serif"><strong>${new Date(book.createdAt).toLocaleDateString()}</strong></p>
             <span class='card-title black-text' style='font-size: 18px'>${book.title.length < 18 ? book.title + '<br><br>' : book.title.substring(0, 19) + '...'}</span><p><strong>${book.author}</strong></p><p>${book.genre}</p></div></div></div></a>`
         })
         document.getElementById('books').innerHTML = html;
@@ -421,6 +437,47 @@
       document.getElementById('success-div').style.display = "none";
       document.getElementById('error').innerHTML = err.response != null ? err.response.data.message : err.message;
     });
+  }
+
+  function loadSearchedBooks() {
+    let searchParam = document.getElementById('search').value;
+    console.log(searchParam.length);
+    if (searchParam.length !== 0) {
+      document.getElementById('preloader').style.display = "block";
+      axios({
+        method: 'post',
+        url: `/api/public/books/search`,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': session.token
+        },
+        data: {
+          search: searchParam
+        }
+      }).then(function (res) {
+        console.log(res.data);
+        document.getElementById('preloader').style.display = "none";
+        if (res.data.success) {
+          let html = "";
+          res.data.books.forEach(book => {
+            html += `<a href='#detail-modal' class='modal-trigger view-book' onclick="viewBook('${book._id}|${book.title}|${book.author}|${book.genre}|${book.summary}')">
+            <div class='col s12 m4 l3'><div class='card z-depth-0' style='border: 1px solid #e0e0e0; border-radius: 10px;height: 200px;cursor: pointer'><div class='card-content'>
+            <p style="font-size: 13px; font-family: 'Roboto Mono', sans-serif"><strong>${new Date(book.createdAt).toLocaleDateString()}</strong></p>
+            <span class='card-title black-text' style='font-size: 18px'>${book.title.length < 18 ? book.title + '<br><br>' : book.title.substring(0, 19) + '...'}</span><p><strong>${book.author}</strong></p><p>${book.genre}</p></div></div></div></a>`
+          })
+          document.getElementById('books').innerHTML = html;
+          document.getElementById('books-num').innerHTML = res.data.books.length + '';
+        }
+      }).catch((err) => {
+        console.log(err.response != null ? err.response : err.message);
+        document.getElementById('preloader').style.display = "none";
+        document.getElementById('error-div').style.display = "block";
+        document.getElementById('success-div').style.display = "none";
+        document.getElementById('error').innerHTML = err.response != null ? err.response.data.message : err.message;
+      });
+    }else{
+      loadBooks();
+    }
   }
 
   function loadEditBookView() {
@@ -534,6 +591,8 @@
   editButton.onclick = loadEditBookView;
   let editForm = document.getElementById("edit-book-form")
   editForm.onsubmit = editBook;
+  let searchInput = document.getElementById("search")
+  searchInput.onchange = loadSearchedBooks;
 
   function hideError() {
     document.getElementById('error-div').style.display = "none";

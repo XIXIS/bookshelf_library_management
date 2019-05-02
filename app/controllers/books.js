@@ -154,6 +154,60 @@ const books = {
     });
   },
 
+  /**
+   * @api {post} /api/books/search List searched books
+   * @apiDescription List all searched books
+   * @apiHeader {String} x-access-token Access token of authorized user
+   * @apiGroup Books
+   * @apiVersion 1.0.0
+   *
+   * @apiParam {String} search search parameter
+   *
+   * @apiSuccessExample {json} Success-Response:
+   * HTTP/1.1 200 OK
+   * {
+   *  "success": true,
+   *  "message": "success message.",
+   *  "books" : [{ _id: 'adfmakln38709ojimkd0', title: 'title', ... },..]
+   * }
+   */
+  listSearchedBooks(req, res) {
+    /**
+     * Get all books
+     */
+    Book.find({
+      $or: [
+        {genre: {$regex: `${req.body.search}`, $options: 'i'}},
+        {title: {$regex: `${req.body.search}`, $options: 'i'}},
+      ]
+    }).sort({title: 1, author: 1, genre: 1}).then((books) => {
+
+      /**
+       * return list of books
+       */
+      return res.json({
+        success: true,
+        message: 'Books listed',
+        books: books
+      });
+
+
+    }).catch((err) => {
+
+      console.log(err);
+      /**
+       * Log find error to console and
+       * return error object
+       */
+      return res.status(500).json({
+        success: false,
+        message: 'An error occurred when finding list of books',
+        error: err
+      });
+
+    });
+  },
+
 
   /**
    * @api {post} /api/books Add book
