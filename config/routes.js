@@ -39,11 +39,7 @@ export default () => {
   router.post('/api/auth/user/register', users.create);
 
   // user routes
-  // router.get('/user', users.list);
   router.post('/api/users', users.create);
-  // router.get('/admins/:adminId', admins.details);
-  // router.put('/admins/:adminId', admins.update);
-  // router.delete('/admins/:adminId', admins.deleteAdmin);
 
 
   /**
@@ -53,6 +49,7 @@ export default () => {
   router.post('/api/books', books.create);
   router.put('/api/books/:bookId', books.updateBook);
   router.post('/api/public/books/search', books.listSearchedBooks);
+  router.delete('/api/books/:bookId', books.deleteBook);
 
   
   return router;

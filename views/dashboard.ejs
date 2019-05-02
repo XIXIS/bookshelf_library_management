@@ -300,17 +300,24 @@
     <div class="modal-footer white">
         <div class="row">
             <div class="col s12">
+                <a id="delete"
+                   style="border-radius: 10px; margin-top: 10px; padding: 0 10px; margin-right: 10px; border: 1px solid #e0e0e0;"
+                   onclick="deleteBook()"
+                   class='btn modal-close z-depth-0 grey darken-1 white-text'>
+                    <i class='material-icons left tiny' style="margin-right: 0;">delete</i>
+                    DELETE
+                </a>
                 <a id="edit-btn"
                    style="border-radius: 10px; margin-top: 10px; padding: 0 10px; margin-right: 10px; border: 1px solid #e0e0e0;"
                    href="#edit-modal"
                    class='btn modal-close z-depth-0 grey darken-1 white-text modal-trigger'>
-                    <i class='material-icons left'>edit</i>
-                    EDIT BOOK
+                    <i class='material-icons left tiny' style="margin-right: 0">edit</i>
+                    EDIT
                 </a>
                 <a href="#!"
-                   style="border-radius: 10px; padding: 0 10px; width: 150px; margin-top: 10px; border: 1px solid #e0e0e0;"
+                   style="border-radius: 10px; padding: 0 10px; width: 100px; margin-top: 10px; border: 1px solid #e0e0e0;"
                    class="modal-close waves-effect waves-green btn white black-text z-depth-0">
-                    <i class='material-icons left grey-text text-darken-1' style="margin-right: 5px">cancel</i>
+                    <i class='material-icons left grey-text text-darken-1' style="margin-right: 0">cancel</i>
                     Close
                 </a>
             </div>
@@ -480,6 +487,34 @@
     }
   }
 
+  function deleteBook() {
+
+      document.getElementById('preloader').style.display = "block";
+      axios({
+        method: 'delete',
+        url: `/api/books/${bookFields[0]}`,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': session.token
+        },
+      }).then(function (res) {
+        console.log(res.data);
+        document.getElementById('preloader').style.display = "none";
+        if (res.data.success) {
+          document.getElementById('error-div').style.display = "none";
+          document.getElementById('success-div').style.display = "block";
+          document.getElementById('success').innerHTML = res.data.message;
+          loadBooks();
+        }
+      }).catch((err) => {
+        console.log(err.response != null ? err.response : err.message);
+        document.getElementById('preloader').style.display = "none";
+        document.getElementById('error-div').style.display = "block";
+        document.getElementById('success-div').style.display = "none";
+        document.getElementById('error').innerHTML = err.response != null ? err.response.data.message : err.message;
+      });
+  }
+
   function loadEditBookView() {
     console.log(bookFields[0]);
     document.getElementById('edit-title').value = bookFields[1];
@@ -572,7 +607,6 @@
     });
 
   }
-
 
   function logout() {
     let sessionNew = {

@@ -22,7 +22,7 @@ const books = {
      * Get all books
      */
     Book.find({})
-      .sort({title: 1, author: 1, genre: 1})
+      .sort({createdAt: 1, title: 1, author: 1, genre: 1})
       .then((books) => {
 
         /**
@@ -73,7 +73,7 @@ const books = {
      * Get all books
      */
     Book.find({})
-      .sort({title: 1, author: 1, genre: 1})
+      .sort({createdAt: 1, title: 1, author: 1, genre: 1})
       .then((books) => {
 
         /**
@@ -180,7 +180,7 @@ const books = {
         {genre: {$regex: `${req.body.search}`, $options: 'i'}},
         {title: {$regex: `${req.body.search}`, $options: 'i'}},
       ]
-    }).sort({title: 1, author: 1, genre: 1}).then((books) => {
+    }).sort({createdAt: 1, title: 1, author: 1, genre: 1}).then((books) => {
 
       /**
        * return list of books
@@ -332,6 +332,39 @@ const books = {
         error: err
       });
     })
+
+  },
+
+  /**
+   * @api {delete} /api/books/:bookId Delete book
+   * @apiDescription Delete a book
+   * @apiHeader {String} x-access-token Access token of authorized user
+   * @apiGroup Books
+   * @apiVersion 1.0.0
+   *
+   * @apiSuccessExample {json} Success-Response:
+   *     HTTP/1.1 200 OK
+   *     {
+   *     	"success": true,
+   *		"message": "success message."
+   *     }
+   */
+  deleteBook(req, res) {
+    Book.deleteOne({_id: req.params.bookId}).then((result) => {
+      // console.log(result, req.params);
+      return res.json({
+        success: true,
+        message: 'Book successfully deleted'
+      });
+    }).catch((err) => {
+      console.log(err);
+      res.json({
+        success: false,
+        message: 'An error occurred deleting book',
+        error: err
+      });
+    })
+
 
   },
 
