@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <title>BookShelf Library Management</title>
+
+        <link rel="icon" href="/images/baseline_book_black_18dp.png" type="image/x-icon"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="/css/materialize.min.css" media="screen,projection"/>
+    <link rel="stylesheet" type="text/css" href="/css/icons.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:300,400" rel="stylesheet">
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+
+    <style>
+
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col s12 valign-wrapper" style="height: 95vh;">
+            <div class="card z-depth-0" style="margin: auto;width: 350px; border-radius: 10px; border: 1px solid #e0e0e0;">
+                <div class="card-content">
+                    <span class="card-title" style="text-align: center">User Registration</span>
+
+                    <div style="display: none;" class="center-align" id="preloader">
+                        <div class="preloader-wrapper small active">
+                            <div class="spinner-layer spinner-blue">
+                                <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                </div><div class="gap-patch">
+                                    <div class="circle"></div>
+                                </div><div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
+                            </div>
+
+                            <div class="spinner-layer spinner-red">
+                                <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                </div><div class="gap-patch">
+                                    <div class="circle"></div>
+                                </div><div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
+                            </div>
+
+                            <div class="spinner-layer spinner-yellow">
+                                <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                </div><div class="gap-patch">
+                                    <div class="circle"></div>
+                                </div><div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
+                            </div>
+
+                            <div class="spinner-layer spinner-green">
+                                <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                </div><div class="gap-patch">
+                                    <div class="circle"></div>
+                                </div><div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" id="error-div" style="display: none;">
+                        <div class="col s12">
+                            <p class='red white-text'
+                               style="padding: 5px 20px; border-radius: 30px;">
+                            <i class="material-icons left"
+                               id="error-icon-close"
+                               style="cursor: pointer"
+                               onClick="hideError()">cancel</i>
+                            <span id="error"></span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row" id="success-div" style="display: none">
+                        <div class="col s12">
+                            <p class='green white-text'
+                               style="padding: 5px 20px; border-radius: 30px;">
+                            <i class="material-icons left"
+                               id="success-icon-close"
+                               style="cursor: pointer"
+                               onClick="hideSuccess()">cancel</i>
+                            <span id="success"></span>
+                            </p>
+                        </div>
+                    </div>
+
+<!--                    <form method="post" action="/api/auth/user/register">-->
+                    <form id="form">
+
+                        <div class="input-field col s12">
+                            <input id="firstname"
+                                   type="text"
+                                   style="font-size: 14px"
+                                   required
+                                   placeholder='firstname'>
+                        </div>
+
+                        <div class="input-field col s12">
+                            <input id="lastname"
+                                   type="text"
+                                   style="font-size: 14px"
+                                   required
+                                   placeholder='lastname'>
+                        </div>
+
+                        <div class="input-field col s12">
+                            <input id="email"
+                                   type="email"
+                                   style="font-size: 14px"
+                                   required
+                                   placeholder='email'>
+                        </div>
+
+                        <div class="input-field col s12">
+                            <input id="password"
+                                   type="password"
+                                   required
+                                   style="font-size: 14px"
+                                   placeholder='password'/>
+                        </div>
+
+                        <div class="col s12">
+
+                            <button type='submit'
+                                    style="border: 1px solid #e0e0e0; width: 100%;border-radius: 5px"
+                                    class="btn waves-effect waves-light white black-text center z-depth-0 grey lighten-2">
+                                Register&nbsp;
+                                <i class="material-icons black-text right tiny" style="font-size: 15px">person_add</i>
+                            </button>
+
+                        </div>
+
+                        <div class="col s12 center">
+                            <br/>
+                            <a href='/login'>Login</a> here if you already have an account
+                        </div>
+                        <p>&nbsp;</p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--JavaScript at end of body for optimized loading-->
+
+<script type="text/javascript" src="/js/materialize.min.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+
+    function hideError(){
+      document.getElementById('error-div').style.display = "none";
+    }
+
+    function hideSuccess(){
+      document.getElementById('success-div').style.display = "none";
+    }
+
+    function registerUser(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById('preloader').style.display = "block";
+      let formData = {
+        email: document.getElementById('email').value,
+        firstName: document.getElementById('firstname').value,
+        lastName: document.getElementById('lastname').value,
+        password: document.getElementById('password').value
+      };
+      console.log(formData);
+
+      axios({
+        method: 'post',
+        url: `/api/auth/user/register`,
+        header: {'Content-Type':'application/json'},
+        data: formData
+      }).then(function (res) {
+        console.log(res.data);
+        document.getElementById('preloader').style.display = "none";
+        if(res.data.success){
+          document.getElementById('success-div').style.display = "block";
+          document.getElementById('error-div').style.display = "none";
+          document.getElementById('success').innerHTML = res.data.message;
+        }
+      }).catch((err) => {
+        console.log(err.response != null ? err.response : err.message);
+        document.getElementById('preloader').style.display = "none";
+        document.getElementById('error-div').style.display = "block";
+        document.getElementById('success-div').style.display = "none";
+        document.getElementById('error').innerHTML = err.response != null ? err.response.data.message : err.message;
+
+      });
+    }
+
+    let form = document.getElementById('form');
+    form.onsubmit = registerUser;
+
+    let errorIconClose = document.getElementById('error-icon-close');
+    errorIconClose.onclick = hideError;
+
+    let successIconClose = document.getElementById('success-icon-close');
+    successIconClose.onclick = hideSuccess;
+
+
+</script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 import express from 'express';
 import auth from "../app/controllers/auth";
-import admins from "../app/controllers/admins";
+import users from "../app/controllers/users";
+import books from "../app/controllers/books";
 
 const router = express.Router();
 
@@ -16,19 +17,39 @@ export default () => {
     })
   });
 
+
+  /**
+   * HTML Page Routes
+   */
+  router.get('/', books.listBooksOnHome);
+  router.get('/login', (req, res) => {
+    res.render('login', {});
+  });
+  router.get('/register', (req, res) => {
+    res.render('register', {});
+  });
+  router.get('/dashboard', books.listBooksOnDashboard);
+
+
+
   /**
    * Auth routes
    */
-  router.post('/auth/login/buyer', auth.buyerLogin);
-  router.post('/auth/login/seller', auth.sellerLogin);
-  router.post('/auth/login/admin', auth.adminLogin);
+  router.post('/api/auth/login', auth.userLogin);
+  router.post('/api/auth/user/register', users.create);
 
-  // admin routes
-  router.get('/admins', admins.list);
-  router.post('/admins', admins.create);
-  router.get('/admins/:adminId', admins.details);
-  router.put('/admins/:adminId', admins.update);
-  router.delete('/admins/:adminId', admins.deleteAdmin);
+  // user routes
+  // router.get('/user', users.list);
+  router.post('/api/users', users.create);
+  // router.get('/admins/:adminId', admins.details);
+  // router.put('/admins/:adminId', admins.update);
+  // router.delete('/admins/:adminId', admins.deleteAdmin);
+
+
+  /**
+   * Book routes
+   */
+  router.get('/books', books.list);
 
   
   return router;

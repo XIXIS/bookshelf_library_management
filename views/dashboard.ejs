@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <title>BookShelf Library Management</title>
+
+    <link rel="icon" href="/images/baseline_book_black_18dp.png" type="image/x-icon"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="/css/materialize.min.css" media="screen,projection"/>
+    <link rel="stylesheet" type="text/css" href="/css/icons.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:300,400" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8">
+
+</head>
+
+<body>
+
+<!-- Navigation Bar -->
+<div class="navbar-fixed">
+    <nav class='white'>
+        <div class="nav-wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col s12">
+                        <a href="#"
+                           data-target="slide-out"
+                           class="sidenav-trigger show-on-small waves-effect waves-light circle">
+                            <i class="material-icons black-text">menu</i>
+                        </a>
+                        <h5 class="black-text hide-on-med-and-down left"
+                            style="font-weight: 300">Public Book Glossary</h5>
+
+                        <ul class="right hide-on-med-and-down">
+                            <li class='active'>
+                                <a class='black-text dropdown-trigger'
+                                   ref={this.dropdown}
+                                   data-target='dropdown1'
+                                   href="!#">
+                                    <span id="session-name"></span>
+                                    <i class="material-icons right">arrow_drop_down</i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+<ul id="dropdown1"
+    class="dropdown-content">
+    <li id="logout"><a href="#!" class='grey-text' style="font-weight: 300">Logout</a></li>
+</ul>
+
+<!-- Slider -->
+
+<div class="container">
+    <div class="row">
+        <% if (books.length == 0) { %>
+            <h4><%= 'No books uploaded yet' %></h4>
+        <% } else {%>
+            <ul>
+                <% books.forEach(function(book){ %>
+                    <li><%- book %></li>
+                <% }); %>
+            </ul>
+        <% } %>
+    </div>
+</div>
+
+
+
+<!--JavaScript at end of body for optimized loading-->
+<script type="text/javascript" src="js/materialize.min.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+  let session = localStorage.getItem('session') !== null ?
+    JSON.parse(localStorage.getItem('session')) : {isAuthenticated: false}
+
+  if(!session.isAuthenticated) window.location.href = '/login';
+  document.getElementById("session-name").innerHTML = session.user.firstName;
+
+  function loadBooks() {
+    e.preventDefault();
+    e.stopPropagation();
+
+    document.getElementById('preloader').style.display = "block";
+    let formData = {
+      email: document.getElementById('email').value,
+      password: document.getElementById('password').value
+    };
+    console.log(formData);
+
+    axios({
+      method: 'post',
+      url: `/api/auth/login`,
+      header: {'Content-Type':'application/json'},
+      data: formData
+    }).then(function (res) {
+      console.log(res.data);
+      document.getElementById('preloader').style.display = "none";
+      if(res.data.success){
+        document.getElementById('error-div').style.display = "none";
+        let session = {
+          user: res.data.results,
+          isAuthenticated: true,
+          token: res.data.token
+        };
+        localStorage.setItem('session', JSON.stringify(session));
+        window.location.href='/dashboard'
+      }
+    }).catch((err) => {
+      console.log(err.response != null ? err.response : err.message);
+      document.getElementById('preloader').style.display = "none";
+      document.getElementById('error-div').style.display = "block";
+      document.getElementById('error').innerHTML = err.response != null ? err.response.data.message : err.message;
+
+    });
+
+  }
+
+
+  function logout(){
+    let sessionNew = {
+      isAuthenticated: false,
+      token: session.token
+    };
+    localStorage.setItem('session', JSON.stringify(sessionNew));
+    window.location.href="/login";
+  }
+
+  logoutLink = document.getElementById("logout");
+  logoutLink.onclick = logout;
+</script>
+</body>
+</html>

@@ -3,12 +3,17 @@
  */
 import cors from 'cors';
 import http from 'http';
+import path from 'path';
 import express from 'express';
 import mongoose from 'mongoose';
 import routes from './config/routes';
 import config from './config/config';
 import auth from './config/middlewares/auth';
-import expressSettings from './config/express';
+import expressValidator from 'express-validator';
+import logger from "morgan";
+import compression from "compression";
+import bodyParser from "body-parser";
+import helmet from "helmet";
 
 
 
@@ -23,20 +28,42 @@ mongoose.connect(config.db, {useNewUrlParser: true}).then(
   }
 );
 
+
 //Initialize express
 let app = express();
 
-//load express settings and configurations
-expressSettings(app, config);
+app.set('showStackError', true);
+// app.use(favicon(path.join(config.root , 'public', 'favicon.ico')));
 
 
-//Add cors and auth middleware
+// don't use logger for test env
+// if (process.env.APP_ENV !== 'testing') {
+app.set('views', path.join(__dirname, '/views'));
+app.set('view engine', 'ejs');
+
+app.use(logger('dev'));
+// }
+
+// set views path
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(compression());
+
+// bodyParser should be above methodOverride
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(expressValidator());
+
+app.use(helmet());
 app.use(cors());
 app.use(auth.validate);
 
+app.use('/', routes());
 
-//Add api prefix to all routes
-app.use('/api', routes());
+
+// app.use(express.static(path.join(__dirname, 'public')));
+// app.set('views', path.join(__dirname, '/views'));
+// app.set('view engine', 'ejs');
+
 
 const debug = require('debug')('bookshelf_library_management:server');
 

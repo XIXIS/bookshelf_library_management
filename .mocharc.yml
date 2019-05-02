@@ -1,0 +1,6 @@
+require:
+  - babel-register
+  - test/helpers
+reporter: spec
+timeout: 5000
+slow: 5000

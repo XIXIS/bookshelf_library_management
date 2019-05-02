@@ -17,11 +17,19 @@ export default {
     // check header or url parameters or post parameters for token
     let token = req.headers['x-access-token'];
     let url = req.url.split('/');
+    // console.log('host = ',req.headers.host);
+    // console.log('url = ',req.url);
 
     /**
      * Exclude validation on all routes with auth, status and public
      */
-    if ( url.includes('auth') || url.includes('status') || url.includes('public') ) {
+    if ( url.includes('auth')
+      || url.includes('status')
+      || url.includes('public')
+      || url.includes('register')
+      || url.includes('dashboard')
+      || url.includes('apidoc')
+      || url.includes('login') || req.url==='/') {
       next();
     } else {
       /**

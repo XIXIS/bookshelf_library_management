@@ -35,38 +35,25 @@ export default {
   userLogin(req, res) {
 
     /**
-     * Find user matching email
-     * Exclude the avatar image on the returned object
+     * Find user matching email and return object
      */
-    User.findOne({email: req.body.email}, {avatar: 0}).then((user) => {
+    User.findOne({email: req.body.email}).then((user) => {
 
-      /**
-       * If no user is found,
-       * Log non-existence of email
-       */
-      if (user == null) {
-        /**
-         * Return invalid credentials
-         */
+      //If no user is found
+      if (!user) {
         return res.status(422).json({success: false, message: 'Invalid email/password.'});
       }
 
-      /**
-       * If user is found but entered wrong password
-       * Log action and return invalid credentials
-       */
+      //If user is found but entered wrong password return invalid credentials
       if (!user.isValidPassword(req.body.password)) {
         return res.status(422).json({success: false, message: 'Invalid username/password.'});
       }
 
-      /**
-       * If user is inactive
-       * Log action and inform user of inactive account
-       */
+      //If user is inactive, inform user of inactive account
       if (!user.isActive) {
         return res.status(403).json({
           success: false,
-          message: 'Sorry your account is inactive. Contact your useristrator'
+          message: 'Sorry your account is inactive. Contact your administrator'
         });
       }
 
