@@ -17,7 +17,7 @@ export default {
     // check header or url parameters or post parameters for token
     let token = req.headers['x-access-token'];
     let url = req.url.split('/');
-    // console.log('host = ',req.headers.host);
+    // console.log('headers => ',req.headers);
     // console.log('url = ',req.url);
 
     /**

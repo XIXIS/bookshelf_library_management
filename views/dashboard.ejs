@@ -24,7 +24,7 @@
         <div class="nav-wrapper">
             <div class="container">
                 <div class="row">
-                    <div class="col s12">
+                    <div class="col s12" style="padding-left: 0">
                         <a href="#"
                            data-target="slide-out"
                            class="sidenav-trigger show-on-small waves-effect waves-light circle">
@@ -49,73 +49,467 @@
         </div>
     </nav>
 </div>
+<!-- Drop Down-->
 <ul id="dropdown1"
     class="dropdown-content">
     <li id="logout"><a href="#!" class='grey-text' style="font-weight: 300">Logout</a></li>
 </ul>
 
-<!-- Slider -->
-
 <div class="container">
     <div class="row">
-        <% if (books.length == 0) { %>
-            <h4><%= 'No books uploaded yet' %></h4>
-        <% } else {%>
-            <ul>
-                <% books.forEach(function(book){ %>
-                    <li><%- book %></li>
-                <% }); %>
-            </ul>
-        <% } %>
+        <div class="col s12" style="padding-left: 0">
+            <p style="padding-left: 14px"><strong id="books-num"><%= books.length %></strong> book(s) in the glossary</p>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <div class="row" id="error-div" style="display: none;">
+                <div class="col s12">
+                    <p class='red white-text'
+                       style="padding: 5px 20px; border-radius: 30px;">
+                        <i class="material-icons left"
+                           id="error-icon-close"
+                           style="cursor: pointer"
+                           onClick="hideError()">cancel</i>
+                        <span id="error"></span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="row" id="success-div" style="display: none">
+                <div class="col s12">
+                    <p class='green white-text'
+                       style="padding: 5px 20px; border-radius: 30px;">
+                        <i class="material-icons left"
+                           id="success-icon-close"
+                           style="cursor: pointer"
+                           onClick="hideSuccess()">cancel</i>
+                        <span id="success"></span>
+                    </p>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 
 
+<div class="container">
+
+    <div style="display: none;" class="center-align" id="preloader">
+        <div class="preloader-wrapper small active">
+            <div class="spinner-layer spinner-blue">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+
+            <div class="spinner-layer spinner-red">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+
+            <div class="spinner-layer spinner-yellow">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+
+            <div class="spinner-layer spinner-green">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <% if (books.length == 0) { %>
+        <div class="row"><h5><%= 'No books added yet' %></h5></div>
+    <% } else { %>
+        <div class="row" id="books">
+            <% books.forEach(function(book){ %>
+                <a href="#detail-modal" class="modal-trigger view-book"
+                   onclick="viewBook(`<%= `${book._id}|${book.title}|${book.author}|${book.genre}|${book.summary}|${book.createdAt}` %>`)">
+                    <div class="col s12 m4 l3">
+                        <div class="card z-depth-0"
+                             style="border: 1px solid #e0e0e0; border-radius: 10px; height: 200px;cursor: pointer">
+                            <div class="card-content">
+
+                                <p style="font-size: 13px; font-family: 'Roboto Mono', sans-serif"><strong><%= new Date(book.createdAt).toLocaleDateString() %></strong></p>
+
+                                <% if(book.title.length < 18) { %>
+                                    <span class="card-title black-text"
+                                          style="font-size: 18px"><%= book.title %> <br><br></span>
+                                <% } else { %>
+                                    <span class="card-title black-text"
+                                          style="font-size: 18px"><%= book.title.substring(0, 19) + '...' %></span>
+                                <% } %>
+
+                                <p><strong><%= book.author %></strong></p>
+                                <p><%= book.genre %></p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            <% }); %>
+        </div>
+    <% } %>
+</div>
+
+<!-- Floating Action Button -->
+<div class="fixed-action-btn">
+    <a class="btn-floating btn-large grey darken-1 modal-trigger" href="#modal">
+        <i class="large material-icons">note_add</i>
+    </a>
+</div>
+
+<!-- Create Book Modal -->
+<div id="modal"
+     style="width: 35%; border-radius: 10px"
+     class="modal white">
+    <form id="create-book-form">
+        <div class="modal-content" style="padding-bottom: 0">
+            <div class="row">
+                <h5 class='col s12' style="margin-top: 0">Add New Book Item</h5>
+                <div class="input-field col s12">
+                    <input id="title"
+                           type="text"
+                           style="font-size: 14px"
+                           required/>
+                    <label for="title">Title</label>
+                </div>
+
+                <div class="input-field col s12">
+                    <input id="author"
+                           type="text"
+                           style="font-size: 14px"
+                           required/>
+                    <label for="author">Author</label>
+                </div>
+
+                <div class="input-field col s12">
+                    <input id="genre"
+                           type="text"
+                           style="font-size: 14px"
+                           required/>
+                    <label for="genre">Genre</label>
+                </div>
+
+                <div class="input-field col s12">
+                    <label for="summary">Summary</label>
+                    <textarea id="summary"
+                              class="materialize-textarea"
+                              style="font-size: 14px"></textarea>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-footer white">
+            <div class="row">
+                <div class="col s12">
+                    <button type="submit"
+                            style="border-radius: 10px; margin-top: 10px; padding: 0 10px; margin-right: 10px; border: 1px solid #e0e0e0;"
+                            class='btn modal-close z-depth-0 grey darken-1 white-text'>
+                        <i class='material-icons left'>note_add</i>
+                        ADD BOOK
+                    </button>
+                    <a href="#!"
+                       style="border-radius: 10px; padding: 0 10px; width: 150px; margin-top: 10px; border: 1px solid #e0e0e0;"
+                       class="modal-close waves-effect waves-green btn white black-text z-depth-0">
+                        <i class='material-icons left grey-text text-darken-1' style="margin-right: 5px">cancel</i>
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+    <br/>
+</div>
+
+<!-- View Book Detail -->
+<div id="detail-modal"
+     style="width: 35%; border-radius: 10px"
+     class="modal white">
+    <div class="modal-content" style="padding-bottom: 0">
+        <div class="row">
+            <h5 class='col s12' style="margin-top: 0">Book Detail</h5>
+            <div class="col s12">
+                <label>Title</label>
+                <br/>
+                <span id="view-modal-title"></span>
+                <br/>
+                <br/>
+                <label>Author</label>
+                <br/>
+                <span id="view-modal-author"></span>
+                <br/>
+                <br/>
+                <label>Genre</label>
+                <br/>
+                <span id="view-modal-genre"></span>
+                <br/>
+                <br/>
+                <label>Summary</label>
+                <br/>
+                <span id="view-modal-summary"></span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer white">
+        <div class="row">
+            <div class="col s12">
+                <a id="edit-btn"
+                   style="border-radius: 10px; margin-top: 10px; padding: 0 10px; margin-right: 10px; border: 1px solid #e0e0e0;"
+                   href="#edit-modal"
+                   class='btn modal-close z-depth-0 grey darken-1 white-text modal-trigger'>
+                    <i class='material-icons left'>edit</i>
+                    EDIT BOOK
+                </a>
+                <a href="#!"
+                   style="border-radius: 10px; padding: 0 10px; width: 150px; margin-top: 10px; border: 1px solid #e0e0e0;"
+                   class="modal-close waves-effect waves-green btn white black-text z-depth-0">
+                    <i class='material-icons left grey-text text-darken-1' style="margin-right: 5px">cancel</i>
+                    Close
+                </a>
+            </div>
+        </div>
+    </div>
+    <br/>
+</div>
+
+<!-- Edit Book Modal -->
+<div id="edit-modal"
+     style="width: 35%; border-radius: 10px"
+     class="modal white">
+    <form id="edit-book-form">
+        <div class="modal-content" style="padding-bottom: 0">
+            <div class="row">
+                <h5 class='col s12' style="margin-top: 0">Edit Book Item</h5>
+                <div class="input-field col s12">
+                    <input id="edit-title"
+                           type="text"
+                           style="font-size: 14px"
+                           required/>
+                    <label for="edit-title">Title</label>
+                </div>
+
+                <div class="input-field col s12">
+                    <input id="edit-author"
+                           type="text"
+                           style="font-size: 14px"
+                           required/>
+                    <label for="edit-author">Author</label>
+                </div>
+
+                <div class="input-field col s12">
+                    <input id="edit-genre"
+                           type="text"
+                           style="font-size: 14px"
+                           required/>
+                    <label for="edit-genre">Genre</label>
+                </div>
+
+                <div class="input-field col s12">
+                    <label for="edit-summary">Summary</label>
+                    <textarea id="edit-summary"
+                              class="materialize-textarea"
+                              style="font-size: 14px"></textarea>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-footer white">
+            <div class="row">
+                <div class="col s12">
+                    <button type="submit"
+                            style="border-radius: 10px; margin-top: 10px; padding: 0 10px; margin-right: 10px; border: 1px solid #e0e0e0;"
+                            class='btn modal-close z-depth-0 grey darken-1 white-text'>
+                        <i class='material-icons left'>update</i>
+                        UPDATE BOOK
+                    </button>
+                    <a href="#!"
+                       style="border-radius: 10px; padding: 0 10px; width: 150px; margin-top: 10px; border: 1px solid #e0e0e0;"
+                       class="modal-close waves-effect waves-green btn white black-text z-depth-0">
+                        <i class='material-icons left grey-text text-darken-1' style="margin-right: 5px">cancel</i>
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+    <br/>
+</div>
 
 <!--JavaScript at end of body for optimized loading-->
 <script type="text/javascript" src="js/materialize.min.js"></script>
 <script type="text/javascript" src="js/index.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="js/ejs.min.js"></script>
 <script>
+
+  let bookFields = [];
+
+  function viewBook(book) {
+    bookFields = book.split('|');
+    document.getElementById('view-modal-title').innerText = bookFields[1];
+    document.getElementById('view-modal-author').innerText = bookFields[2];
+    document.getElementById('view-modal-genre').innerText = bookFields[3];
+    document.getElementById('view-modal-summary').innerText = bookFields[4];
+  }
+
+
   let session = localStorage.getItem('session') !== null ?
     JSON.parse(localStorage.getItem('session')) : {isAuthenticated: false}
 
-  if(!session.isAuthenticated) window.location.href = '/login';
+  if (!session.isAuthenticated) window.location.href = '/login';
   document.getElementById("session-name").innerHTML = session.user.firstName;
 
+  // console.log(session.token);
+
   function loadBooks() {
-    e.preventDefault();
-    e.stopPropagation();
-
-    document.getElementById('preloader').style.display = "block";
-    let formData = {
-      email: document.getElementById('email').value,
-      password: document.getElementById('password').value
-    };
-    console.log(formData);
-
     axios({
-      method: 'post',
-      url: `/api/auth/login`,
-      header: {'Content-Type':'application/json'},
-      data: formData
+      method: 'get',
+      url: `/api/books`,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': session.token
+      },
     }).then(function (res) {
       console.log(res.data);
       document.getElementById('preloader').style.display = "none";
-      if(res.data.success){
-        document.getElementById('error-div').style.display = "none";
-        let session = {
-          user: res.data.results,
-          isAuthenticated: true,
-          token: res.data.token
-        };
-        localStorage.setItem('session', JSON.stringify(session));
-        window.location.href='/dashboard'
+      if (res.data.success) {
+        let html = "";
+        res.data.books.forEach(book => {
+          html += `<a href='#detail-modal' class='modal-trigger view-book' onclick="viewBook('${book._id}|${book.title}|${book.author}|${book.genre}|${book.summary}')">
+            <div class='col s12 m4 l3'><div class='card z-depth-0' style='border: 1px solid #e0e0e0; border-radius: 10px;height: 200px;cursor: pointer'><div class='card-content'>
+            <span class='card-title black-text' style='font-size: 18px'>${book.title.length < 18 ? book.title + '<br><br>' : book.title.substring(0, 19) + '...'}</span><p><strong>${book.author}</strong></p><p>${book.genre}</p></div></div></div></a>`
+        })
+        document.getElementById('books').innerHTML = html;
+        document.getElementById('books-num').innerHTML = res.data.books.length + '';
       }
     }).catch((err) => {
       console.log(err.response != null ? err.response : err.message);
       document.getElementById('preloader').style.display = "none";
       document.getElementById('error-div').style.display = "block";
+      document.getElementById('success-div').style.display = "none";
+      document.getElementById('error').innerHTML = err.response != null ? err.response.data.message : err.message;
+    });
+  }
+
+  function loadEditBookView() {
+    console.log(bookFields[0]);
+    document.getElementById('edit-title').value = bookFields[1];
+    document.getElementById('edit-author').value = bookFields[2];
+    document.getElementById('edit-genre').value = bookFields[3];
+    document.getElementById('edit-summary').value = bookFields[4];
+    M.updateTextFields();
+    M.textareaAutoResize(document.getElementById('edit-summary'));
+  }
+
+  function editBook(e) {
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    let formData = {
+      title: document.getElementById('edit-title').value,
+      genre: document.getElementById('edit-genre').value,
+      author: document.getElementById('edit-author').value,
+      summary: document.getElementById('edit-summary').value
+    };
+    console.log(formData);
+
+    axios({
+      method: 'put',
+      url: `/api/books/${bookFields[0]}`,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': session.token
+      },
+      data: formData
+    }).then(function (res) {
+      console.log(res.data);
+      document.getElementById('preloader').style.display = "none";
+      if (res.data.success) {
+        document.getElementById('error-div').style.display = "none";
+        document.getElementById('success-div').style.display = "block";
+        document.getElementById('success').innerHTML = res.data.message;
+        loadBooks();
+      }
+    }).catch((err) => {
+      console.log(err.response != null ? err.response : err.message);
+      document.getElementById('preloader').style.display = "none";
+      document.getElementById('error-div').style.display = "block";
+      document.getElementById('success-div').style.display = "none";
+      document.getElementById('error').innerHTML = err.response != null ? err.response.data.message : err.message;
+    });
+  }
+
+  function createBook(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    document.getElementById('preloader').style.display = "block";
+    document.getElementById('error-div').style.display = "none";
+    document.getElementById('success-div').style.display = "none";
+
+    let formData = {
+      title: document.getElementById('title').value,
+      genre: document.getElementById('genre').value,
+      author: document.getElementById('author').value,
+      summary: document.getElementById('summary').value
+    };
+    console.log(formData);
+
+    axios({
+      method: 'post',
+      url: `/api/books`,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': session.token
+      },
+      data: formData
+    }).then(function (res) {
+      console.log(res.data);
+      document.getElementById('preloader').style.display = "none";
+      if (res.data.success) {
+        document.getElementById('error-div').style.display = "none";
+        document.getElementById('success-div').style.display = "block";
+        document.getElementById('success').innerHTML = res.data.message;
+        loadBooks();
+      }
+    }).catch((err) => {
+      console.log(err.response != null ? err.response : err.message);
+      document.getElementById('preloader').style.display = "none";
+      document.getElementById('error-div').style.display = "block";
+      document.getElementById('success-div').style.display = "none";
       document.getElementById('error').innerHTML = err.response != null ? err.response.data.message : err.message;
 
     });
@@ -123,17 +517,42 @@
   }
 
 
-  function logout(){
+  function logout() {
     let sessionNew = {
       isAuthenticated: false,
       token: session.token
     };
     localStorage.setItem('session', JSON.stringify(sessionNew));
-    window.location.href="/login";
+    window.location.href = "/login";
   }
 
-  logoutLink = document.getElementById("logout");
+  let logoutLink = document.getElementById("logout");
   logoutLink.onclick = logout;
+  let addBookForm = document.getElementById("create-book-form")
+  addBookForm.onsubmit = createBook;
+  let editButton = document.getElementById("edit-btn")
+  editButton.onclick = loadEditBookView;
+  let editForm = document.getElementById("edit-book-form")
+  editForm.onsubmit = editBook;
+
+  function hideError() {
+    document.getElementById('error-div').style.display = "none";
+  }
+
+  function hideSuccess() {
+    document.getElementById('success-div').style.display = "none";
+  }
+
+  let errorIconClose = document.getElementById('error-icon-close');
+  errorIconClose.onclick = hideError;
+
+  let successIconClose = document.getElementById('success-icon-close');
+  successIconClose.onclick = hideSuccess;
+
+  /*
+  Describes popular software, platforms, and programming languages used to visualize data, presents over 30 types of charts and the insights that they portray, describes visual data exploration methods, offers practical tips for telling stories with data that will resonate with an audience, offers tactics for designing and delivering data presentations, along with common pitfalls and how to avoid them
+   */
+
 </script>
 </body>
 </html>

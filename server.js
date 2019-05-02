@@ -38,6 +38,7 @@ app.set('showStackError', true);
 
 // don't use logger for test env
 // if (process.env.APP_ENV !== 'testing') {
+app.disable('view cache');
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
 

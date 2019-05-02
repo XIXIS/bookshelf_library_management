@@ -156,40 +156,40 @@ const books = {
 
 
   /**
-   * @api {post} /api/books Register user
-   * @apiDescription Create user
+   * @api {post} /api/books Add book
+   * @apiDescription Create book
    * @apiHeader {String} x-access-token Access token of authorized user
-   * @apiGroup Users
+   * @apiGroup Books
    * @apiVersion 1.0.0
    *
-   * @apiParam {String} firstName first name of user
-   * @apiParam {String} lastName last name of user
-   * @apiParam {String} email email of user
-   * @apiParam {String} password password of user
+   * @apiParam {String} title title of book
+   * @apiParam {String} author author book
+   * @apiParam {String} genre genre of book
+   * @apiParam {String} summary book summary
    *
    * @apiSuccessExample {json} Success-Response:
    * HTTP/1.1 200 OK
    * {
    *  "success": true,
    *  "message": "success message.",
-   *  "user" : { _id: 'adfmakln38709ojimkd0', firstName: 'first name', ... }
+   *  "book" : { _id: 'adfmakln38709ojimkd0', title: 'title', ... }
    * }
    */
   create(req, res) {
 
     /**
-     * Check if user already exists and create it otherwise
+     * Check if book already exists and create it otherwise
      */
-    Book.find({email: req.body.email}).then((user) => {
+    Book.findOne({title: req.body.title, author: req.body.author, genre: req.body.genre}).then((book) => {
 
       /**
-       * If user matches email
+       * If book already exists
        * return status 409 and indicate existence of user
        */
-      if (user) {
+      if (book) {
         return res.status(409).json({
           success: false,
-          message: 'Book with email already exists',
+          message: 'Book already exists',
         });
       }
 
@@ -199,8 +199,8 @@ const books = {
       Book.create(req.body).then((nBook) => {
         return res.json({
           success: true,
-          message: 'Book registration successful',
-          user: nBook
+          message: 'Book successfully added',
+          book: nBook
         });
 
       }).catch((err) => {
@@ -212,7 +212,7 @@ const books = {
         console.log(err);
         return res.status(500).json({
           success: false,
-          message: 'An error occurred when creating user',
+          message: 'An error occurred when adding book',
           error: err
         });
 
@@ -227,13 +227,59 @@ const books = {
       console.log(err);
       return res.status(500).json({
         success: false,
-        message: 'An error occurred when finding existing user',
+        message: 'An error occurred when finding existing book',
         error: err
       });
 
     });
   },
 
+
+  /**
+   * @api {put} /api/books/:bookId Update book
+   * @apiDescription Updates a book
+   * @apiHeader {String} x-access-token Access token of authorized user
+   * @apiGroup Books
+   * @apiVersion 1.0.0
+   *
+   * @apiParam {String} title title of book
+   * @apiParam {String} author author book
+   * @apiParam {String} genre genre of book
+   * @apiParam {String} summary book summary
+   *
+   * @apiSuccessExample {json} Success-Response:
+   *     HTTP/1.1 200 OK
+   *     {
+   *     	"success": true,
+   *		"message": "success message."
+   *     }
+   */
+  updateBook(req, res) {
+    Book.findOne({_id: req.params.bookId}).then((book) => {
+
+      if (!book) return res.status(404).json({success: false, message: 'Book does not exist'});
+
+      Book.update({_id: req.params.bookId}, {$set: req.body}).then(() => {
+        return res.json({
+          success: true,
+          message: 'Book details updated successfully',
+        })
+      }).catch((err) => {
+        return res.json({
+          success: false,
+          message: 'Error occurred when updating book details',
+          error: err
+        });
+      })
+    }).catch((err) => {
+      return res.json({
+        success: false,
+        message: 'Error occurred when finding existing book',
+        error: err
+      });
+    })
+
+  },
 
 };
 

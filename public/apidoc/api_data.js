@@ -149,8 +149,8 @@ define({ "api": [
   {
     "type": "post",
     "url": "/api/books",
-    "title": "Register user",
-    "description": "<p>Create user</p>",
+    "title": "Add book",
+    "description": "<p>Create book</p>",
     "header": {
       "fields": {
         "Header": [
@@ -164,7 +164,7 @@ define({ "api": [
         ]
       }
     },
-    "group": "Users",
+    "group": "Books",
     "version": "1.0.0",
     "parameter": {
       "fields": {
@@ -173,29 +173,29 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "firstName",
-            "description": "<p>first name of user</p>"
+            "field": "title",
+            "description": "<p>title of book</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "lastName",
-            "description": "<p>last name of user</p>"
+            "field": "author",
+            "description": "<p>author book</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "email",
-            "description": "<p>email of user</p>"
+            "field": "genre",
+            "description": "<p>genre of book</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "password",
-            "description": "<p>password of user</p>"
+            "field": "summary",
+            "description": "<p>book summary</p>"
           }
         ]
       }
@@ -204,13 +204,13 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n \"success\": true,\n \"message\": \"success message.\",\n \"user\" : { _id: 'adfmakln38709ojimkd0', firstName: 'first name', ... }\n}",
+          "content": "HTTP/1.1 200 OK\n{\n \"success\": true,\n \"message\": \"success message.\",\n \"book\" : { _id: 'adfmakln38709ojimkd0', title: 'title', ... }\n}",
           "type": "json"
         }
       ]
     },
     "filename": "app/controllers/books.js",
-    "groupTitle": "Users",
+    "groupTitle": "Books",
     "name": "PostApiBooks"
   },
   {
