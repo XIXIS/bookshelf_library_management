@@ -48,6 +48,39 @@
     "name": "PostApiAuthLogin"
   },
   {
+    "type": "delete",
+    "url": "/api/books/:bookId",
+    "title": "Delete book",
+    "description": "<p>Delete a book</p>",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>Access token of authorized user</p>"
+          }
+        ]
+      }
+    },
+    "group": "Books",
+    "version": "1.0.0",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "    HTTP/1.1 200 OK\n    {\n    \t\"success\": true,\n\t\t\"message\": \"success message.\"\n    }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/books.js",
+    "groupTitle": "Books",
+    "name": "DeleteApiBooksBookid"
+  },
+  {
     "type": "get",
     "url": "/api/books",
     "title": "List books",
@@ -212,6 +245,119 @@
     "filename": "app/controllers/books.js",
     "groupTitle": "Books",
     "name": "PostApiBooks"
+  },
+  {
+    "type": "post",
+    "url": "/api/books/search",
+    "title": "List searched books",
+    "description": "<p>List all searched books</p>",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>Access token of authorized user</p>"
+          }
+        ]
+      }
+    },
+    "group": "Books",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "search",
+            "description": "<p>search parameter</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n \"success\": true,\n \"message\": \"success message.\",\n \"books\" : [{ _id: 'adfmakln38709ojimkd0', title: 'title', ... },..]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/books.js",
+    "groupTitle": "Books",
+    "name": "PostApiBooksSearch"
+  },
+  {
+    "type": "put",
+    "url": "/api/books/:bookId",
+    "title": "Update book",
+    "description": "<p>Updates a book</p>",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "x-access-token",
+            "description": "<p>Access token of authorized user</p>"
+          }
+        ]
+      }
+    },
+    "group": "Books",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "title",
+            "description": "<p>title of book</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "author",
+            "description": "<p>author book</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "genre",
+            "description": "<p>genre of book</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "summary",
+            "description": "<p>book summary</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "    HTTP/1.1 200 OK\n    {\n    \t\"success\": true,\n\t\t\"message\": \"success message.\"\n    }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "app/controllers/books.js",
+    "groupTitle": "Books",
+    "name": "PutApiBooksBookid"
   },
   {
     "type": "post",

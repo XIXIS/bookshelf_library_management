@@ -58,6 +58,17 @@ app.use(helmet());
 app.use(cors());
 app.use(auth.validate);
 
+app.use(function (err, req, res, next) {
+  // treat as 404
+  if (err.message.indexOf('not found')) return next();
+
+  // log it
+  console.error(err.stack);
+
+  // error page
+  res.status(500).render('500', {error: err.stack})
+});
+
 app.use('/', routes());
 
 
@@ -68,7 +79,7 @@ app.use('/', routes());
 
 const debug = require('debug')('bookshelf_library_management:server');
 
-//Get port from environment and store in Express.
+//Get port from environment and store in Express
 const port = normalizePort(config.port);
 app.set('port', port);
 
@@ -124,7 +135,7 @@ function onError(error) {
   }
 }
 
-//Event listener for HTTP server "listening" event.
+// Event listener for HTTP server "listening" event.
 function onListening() {
   let addr = server.address();
   let bind = typeof addr === 'string'
@@ -133,4 +144,6 @@ function onListening() {
   debug('Listening on ' + bind);
   console.log('server running on port: ' + addr.port);
 }
+
+export default app;
 

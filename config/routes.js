@@ -39,7 +39,7 @@ export default () => {
   router.post('/api/auth/user/register', users.create);
 
   // user routes
-  router.post('/api/users', users.create);
+  // router.post('/api/users', users.create);
 
 
   /**

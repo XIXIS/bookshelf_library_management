@@ -313,7 +313,7 @@ const books = {
 
       if (!book) return res.status(404).json({success: false, message: 'Book does not exist'});
 
-      Book.update({_id: req.params.bookId}, {$set: req.body}).then(() => {
+      Book.updateOne({_id: req.params.bookId}, {$set: req.body}).then(() => {
         return res.json({
           success: true,
           message: 'Book details updated successfully',
