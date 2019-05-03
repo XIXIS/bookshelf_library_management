@@ -32,6 +32,8 @@ JWT_SECRET=
 npm start 
 ```
 Visit http://localhost:[SERVER_PORT]
+
+
 Visit http://localhost:[SERVER_PORT]/apidoc for the apidoc
 
 Run tests
